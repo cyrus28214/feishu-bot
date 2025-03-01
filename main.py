@@ -12,7 +12,7 @@ def main():
     request: lark.im.v1.CreateMessageRequest = lark.im.v1.CreateMessageRequest.builder() \
         .receive_id_type("chat_id") \
         .request_body(lark.im.v1.CreateMessageRequestBody.builder()
-            .receive_id("ou_7d8a6e6df7621556ce0d21922b676706ccs")
+            .receive_id("oc_96e40d515600ee8e986804d340795e25") # 机器人测试群的 chat_id
             .msg_type("text")
             .content("{\"text\":\"test content\"}")
             .build()) \
