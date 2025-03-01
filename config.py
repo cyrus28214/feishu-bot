@@ -1,11 +1,12 @@
 from pydantic import BaseModel, Field, ValidationError
 import toml
 
-class FeishuConfig(BaseModel):
-    webhook_url: str = Field(..., description="飞书机器人webhook url")
+class LarkConfig(BaseModel):
+    app_id: str = Field(..., description="飞书app id")
+    app_secret: str = Field(..., description="飞书app secret")
 
 class Config(BaseModel):
-    feishu: FeishuConfig = Field(..., description="飞书配置")
+    lark: LarkConfig = Field(..., description="飞书配置")
 
     @classmethod
     def load(cls, config_path: str = "config.toml") -> "Config":

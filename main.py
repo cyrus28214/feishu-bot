@@ -1,15 +1,9 @@
 from config import Config
-from feishu import Feishu
+from lark import Lark
 
 def main():
     config = Config.load()
-    feishu = Feishu(config.feishu)
-    feishu.send_message({
-        "msg_type": "text",
-        "content": {
-            "text": "Hello, world!"
-        }
-    })
-
+    lark = Lark(config.lark)
+    
 if __name__ == "__main__":
     main()
