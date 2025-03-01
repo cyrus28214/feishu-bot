@@ -14,6 +14,11 @@
 
 ## TODOs
 
+- [ ] 在群聊中发送消息
 - [ ] 接收用户私聊
 - [ ] 生成匿名昵称
 - [ ] 在群内发送匿名消息
+
+## Useful links
+
+- [飞书开放平台](https://open.feishu.cn/document/client-docs/intro)
