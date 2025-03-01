@@ -23,3 +23,4 @@
 ## Useful links
 
 - [飞书开放平台](https://open.feishu.cn/document/client-docs/intro)
+- [发送消息](https://open.feishu.cn/document/server-docs/im-v1/message/create)

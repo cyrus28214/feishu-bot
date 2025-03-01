@@ -1,2 +1,3 @@
-[feishu]
-webhook_url = "https://open.larkoffice.com/open-apis/bot/v2/hook/xxxx"
+[lark]
+app_id = ""
+app_secret = ""
