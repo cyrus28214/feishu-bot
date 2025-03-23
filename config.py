@@ -15,8 +15,9 @@ class LogLevel(Enum):
     CRITICAL = 50
 
 class Config(BaseModel):
-    lark: LarkConfig = Field(..., description="飞书配置")
     log_level: LogLevel = Field(default=LogLevel.INFO, description="日志级别")
+    chat_id: str = Field(..., description="要匿名发送到的大群的chat_id")
+    lark: LarkConfig = Field(..., description="飞书配置")
 
     @field_validator('log_level', mode='before')
     @classmethod
@@ -29,7 +30,7 @@ class Config(BaseModel):
         return v
 
     @classmethod
-    def load(cls, config_path: str = "config.toml") -> "Config":
+    def load(cls, config_path: str) -> "Config":
         try:
             with open(config_path, "rb") as f:
                 config_dict = tomllib.load(f)

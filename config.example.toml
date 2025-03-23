@@ -1,4 +1,5 @@
-log_level = INFO
+log_level = "INFO"
+chat_id = "" # 要匿名发送到的大群的chat_id
 
 [lark]
 app_id = ""
