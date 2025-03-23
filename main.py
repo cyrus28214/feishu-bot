@@ -14,7 +14,8 @@ def main():
     ws = lark.ws.Client(
         config.lark.app_id,
         config.lark.app_secret,
-        event_handler=event_handler
+        event_handler=event_handler,
+        log_level=config.log_level
     )
     ws.start()
 

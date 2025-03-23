@@ -1,12 +1,32 @@
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field, ValidationError, field_validator
 import tomllib
+from enum import Enum
 
 class LarkConfig(BaseModel):
     app_id: str = Field(..., description="飞书app id")
     app_secret: str = Field(..., description="飞书app secret")
 
+# copied from lark_oapi/core/enum.py
+class LogLevel(Enum):
+    DEBUG = 10
+    INFO = 20
+    WARNING = 30
+    ERROR = 40
+    CRITICAL = 50
+
 class Config(BaseModel):
     lark: LarkConfig = Field(..., description="飞书配置")
+    log_level: LogLevel = Field(default=LogLevel.INFO, description="日志级别")
+
+    @field_validator('log_level', mode='before')
+    @classmethod
+    def parse_log_level(cls, v):
+        if isinstance(v, str):
+            try:
+                return LogLevel[v.upper()]
+            except KeyError:
+                raise ValueError(f'无效的日志级别: {v}。可用选项: {", ".join(LogLevel.__members__.keys())}')
+        return v
 
     @classmethod
     def load(cls, config_path: str = "config.toml") -> "Config":
