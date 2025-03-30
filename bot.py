@@ -1,6 +1,7 @@
 from config import Config
 import lark_oapi as lark
 from message import send_message_to_group
+from forward import forward_message_to_group
 import json
 
 class Bot:
@@ -43,14 +44,16 @@ class Bot:
 
         content = json.loads(event.event.message.content)
         message_type = event.event.message.message_type
+        message_id = event.event.message.message_id
 
         lark.logger.info(f"Received message: {content}")
 
         match message_type:
-            case "text":
-                send_message_to_group(self.client, self.config.chat_id, content["text"])
+            case "text" | "image":
+                forward_message_to_group(self.client, self.config.chat_id, message_id)
             case _:
                 lark.logger.warning(f"Unsupported message type: {message_type}")
+                lark.logger.warning(f"Unsupported message content: {content}")
 
     def start(self):
         self.ws.start()
