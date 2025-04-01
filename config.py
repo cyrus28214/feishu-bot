@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ValidationError, field_validator
+from pydantic import BaseModel, Field, ValidationError
 import tomllib
 from enum import Enum
 
@@ -15,22 +15,12 @@ class LogLevel(Enum):
     CRITICAL = 50
 
 class Config(BaseModel):
-    log_level: LogLevel = Field(default=LogLevel.INFO, description="日志级别")
-    chat_id: str = Field(..., description="要匿名发送到的大群的chat_id")
     lark: LarkConfig = Field(..., description="飞书配置")
-
-    @field_validator('log_level', mode='before')
-    @classmethod
-    def parse_log_level(cls, v):
-        if isinstance(v, str):
-            try:
-                return LogLevel[v.upper()]
-            except KeyError:
-                raise ValueError(f'无效的日志级别: {v}。可用选项: {", ".join(LogLevel.__members__.keys())}')
-        return v
+    log_level: LogLevel = Field(description="日志级别", default=LogLevel.INFO)
+    chat_id: str = Field(..., description="转发群聊id")
 
     @classmethod
-    def load(cls, config_path: str) -> "Config":
+    def load(cls, config_path: str = "config.toml") -> "Config":
         try:
             with open(config_path, "rb") as f:
                 config_dict = tomllib.load(f)
