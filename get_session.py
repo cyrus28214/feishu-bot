@@ -25,6 +25,6 @@ def get_session_by_sender_id(sender_id: str) -> str:
 #     lark.logger.info(f"Add session: {session} for sender_id: {sender_id}")
 
 def add_session(sender_id: str, session: str):
-    db = Database()
-    db.add_session(sender_id, session)
-    lark.logger.info(f"Add session: {session} for sender_id: {sender_id}")
+    db = Database() #获取数据库实例
+    db.add_session(sender_id, session) #添加session
+    lark.logger.info(f"Add session: {session} for sender_id: {sender_id}") #记录日志
