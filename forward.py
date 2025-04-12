@@ -1,7 +1,7 @@
 import lark_oapi as lark
 import json
 
-def forward_message_to_group(client: lark.Client, chat_id: str, message_id: str ):
+def forward_message_to_group(client: lark.Client, chat_id: str, message_id: str):
 
     request = lark.im.v1.ForwardMessageRequest.builder() \
         .message_id(message_id) \

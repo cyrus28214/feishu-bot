@@ -1,5 +1,6 @@
 log_level = 20 # INFO
 chat_id = "" # 要匿名发送到的大群的chat_id
+chat_type = "thread" # thread or chat
 
 [lark]
 app_id = ""

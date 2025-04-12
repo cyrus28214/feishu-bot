@@ -18,6 +18,7 @@ class Config(BaseModel):
     lark: LarkConfig = Field(..., description="飞书配置")
     log_level: LogLevel = Field(description="日志级别", default=LogLevel.INFO)
     chat_id: str = Field(..., description="转发群聊id")
+    chat_type: str = Field(..., description="转发群聊类型")
 
     @classmethod
     def load(cls, config_path: str = "config.toml") -> "Config":

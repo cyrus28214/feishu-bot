@@ -4,6 +4,7 @@ from message import send_message_to_group
 from forward import forward_message_to_group
 from message_get import get_message_from_group
 from get_session import get_session_by_sender_id, add_session
+from reply import reply_message_to_group
 import json
 from uuid import uuid4
 
@@ -90,38 +91,46 @@ class Bot:
     转发消息,并判断并执行是否在消息前增加匿名ID消息
     '''
     def handle_message(self, message_id: str, sender_id: str, p2p_chat_id: str):
-        should_title = True
+
         session: str = get_session_by_sender_id(sender_id) # 如果没有匿名ID,则返回空字符串
         if session == "":
-            session = str(uuid4())
+            session = str(uuid4()) #新建session TODO: 根据时间生成session
             add_session(sender_id, session)
             new_message = f"已自动创建匿名ID: {session}"
             send_message_to_group(self.client, p2p_chat_id, new_message)
-        response : lark.im.v1.ListMessageResponseBody = get_message_from_group(self.client, self.config.chat_id)
-        current_messages = response.items # 获取当前群聊中最近的十条消息
-        for current_message in current_messages:
-            current_content = json.loads(current_message.body.content)
-            current_msg_type = current_message.msg_type
-            sender_type = current_message.sender.sender_type
-            if sender_type == "user":
-                should_title = True
-                break
-            if current_msg_type != "text":
-                continue
-            sentence: str = current_content["text"]
-            if sentence.startswith("[匿名ID]"):
-                this_session = sentence[6:]
-                if this_session == session:
-                    should_title = False
-                    break
-                else:
+
+
+        if self.config.chat_type == "chat": #处理群聊中是否需要添加title
+            should_title = True
+            response : lark.im.v1.ListMessageResponseBody = get_message_from_group(self.client, self.config.chat_id)
+            current_messages = response.items # 获取当前群聊中最近的十条消息
+            for current_message in current_messages:
+                current_content = json.loads(current_message.body.content)
+                current_msg_type = current_message.msg_type
+                sender_type = current_message.sender.sender_type
+                if sender_type == "user":
                     should_title = True
                     break
-            else:
-                continue
+                if current_msg_type != "text":
+                    continue
+                sentence: str = current_content["text"]
+                if sentence.startswith("[匿名ID]"):
+                    this_session = sentence[6:]
+                    if this_session == session:
+                        should_title = False
+                        break
+                    else:
+                        should_title = True
+                        break
+                else:
+                    continue
 
-        if should_title:
+            if should_title:
+                title = "[匿名ID]{}".format(session)
+                send_message_to_group(self.client, self.config.chat_id, title)
+
+        forward_response_data = forward_message_to_group(self.client, self.config.chat_id, message_id)
+
+        if self.config.chat_type == "thread":
             title = "[匿名ID]{}".format(session)
-            send_message_to_group(self.client, self.config.chat_id, title)
-
-        forward_message_to_group(self.client, self.config.chat_id, message_id)
+            reply_message_to_group(self.client, f"{{\"text\":\"{title}\"}}", forward_response_data.message_id)
