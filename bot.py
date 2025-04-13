@@ -55,34 +55,35 @@ class Bot:
         p2p_chat_id = event.event.message.chat_id
 
         lark.logger.info(f"Received message: {content}")
+        self.handle_message(message_id, sender_id, p2p_chat_id)
 
-        if message_type == "text":
-            match content["text"]:
-                case "/generate":
-                    '''
-                    指令"/generate"用于随机生成匿名ID
-                    '''
-                    session = str(uuid4())
-                    add_session(sender_id, session)
-                case "/help":
-                    text = '''/help           查看帮助信息
-/generate     用于随机生成匿名ID   
-/name abc    用于设置匿名ID为abc
-若未设置匿名ID,则会随机生成'''
-                    send_message_to_group(self.client, p2p_chat_id, text)
-                case _:
-                    command: str = content["text"]
-                    '''
-                    指令"/name abc"用于设置匿名ID为abc
-                    '''
-                    if command.startswith("/name "):
-                        session = command[6:]
-                        session = session.strip()
-                        add_session(sender_id, session)
-                    else:
-                        self.handle_message(message_id, sender_id, p2p_chat_id)
-        else:
-            self.handle_message(message_id, sender_id, p2p_chat_id)
+#         if message_type == "text":
+#             match content["text"]:
+#                 case "/generate":
+#                     '''
+#                     指令"/generate"用于随机生成匿名ID
+#                     '''
+#                     session = str(uuid4())
+#                     add_session(sender_id, session)
+#                 case "/help":
+#                     text = '''/help           查看帮助信息
+# /generate     用于随机生成匿名ID   
+# /name abc    用于设置匿名ID为abc
+# 若未设置匿名ID,则会随机生成'''
+#                     send_message_to_group(self.client, p2p_chat_id, text)
+#                 case _:
+#                     command: str = content["text"]
+#                     '''
+#                     指令"/name abc"用于设置匿名ID为abc
+#                     '''
+#                     if command.startswith("/name "):
+#                         session = command[6:]
+#                         session = session.strip()
+#                         add_session(sender_id, session)
+#                     else:
+#                         self.handle_message(message_id, sender_id, p2p_chat_id)
+#         else:
+#             self.handle_message(message_id, sender_id, p2p_chat_id)
 
     def start(self):
         self.ws.start()
@@ -96,8 +97,8 @@ class Bot:
         if session == "":
             session = str(uuid4()) #新建session TODO: 根据时间生成session
             add_session(sender_id, session)
-            new_message = f"已自动创建匿名ID: {session}"
-            send_message_to_group(self.client, p2p_chat_id, new_message)
+            # new_message = f"已自动创建匿名ID: {session}"
+            # send_message_to_group(self.client, p2p_chat_id, new_message)
 
 
         if self.config.chat_type == "chat": #处理群聊中是否需要添加title
@@ -131,6 +132,6 @@ class Bot:
 
         forward_response_data = forward_message_to_group(self.client, self.config.chat_id, message_id)
 
-        if self.config.chat_type == "thread":
-            title = "[匿名ID]{}".format(session)
-            reply_message_to_group(self.client, f"{{\"text\":\"{title}\"}}", forward_response_data.message_id)
+        # if self.config.chat_type == "thread":
+        #     title = "[匿名ID]{}".format(session)
+        #     reply_message_to_group(self.client, f"{{\"text\":\"{title}\"}}", forward_response_data.message_id)
